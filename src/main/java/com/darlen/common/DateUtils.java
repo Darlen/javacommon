@@ -1,5 +1,5 @@
 /** ** ** ** ** ** ** **** ** ** ** ** ** ** **** ** ** ** ** ** ** **
- *    ProjectName javacommon
+ *    ProjectName JAVA COMMON
  *    File Name   DateUtils.java 
  * ** ** ** ** ** ** ** **** ** ** ** ** ** ** **** ** ** ** ** ** ** **
  *    Copyright (c) 2015 Darlen . All Rights Reserved. 
@@ -7,21 +7,7 @@
  * ** ** ** ** ** ** ** **** ** ** ** ** ** ** **** ** ** ** ** ** ** **
  * */
 package com.darlen.common;
-
-/** ** ** ** ** ** ** **** ** ** ** ** ** ** **** ** ** ** ** ** ** **
- *    ProjectName mybatisdemo1
- *    File Name   DateUtils.java 
- * ** ** ** ** ** ** ** **** ** ** ** ** ** ** **** ** ** ** ** ** ** **
- *    Copyright (c) 2015 Darlen . All Rights Reserved. 
- *    注意： 本内容仅限于XXX公司内部使用，禁止转发
- * ** ** ** ** ** ** ** **** ** ** ** ** ** ** **** ** ** ** ** ** ** **
- * */
-
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
+import org.apache.log4j.Logger;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -40,6 +26,7 @@ import java.util.*;
  * @author Darlen liu
  */
 public class DateUtils {
+    private final static Logger logger = Logger.getLogger(DateUtils.class);
     /**
      * 缺省日期格式
      */
@@ -93,7 +80,7 @@ public class DateUtils {
     /**
      * 星期数组
      */
-    public static final String[] WEEKS = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+    public static final String[] WEEKS = {"","星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
 
     /**
      * 月份组
@@ -266,7 +253,7 @@ public class DateUtils {
      * @return
      * @version 2011-7-12
      */
-    public static String millisecondFmtToString(Long millisecond, String format) {
+    public static String milsecFmtToString(Long millisecond, String format) {
         if (millisecond == null || millisecond <= 0) {
             throw new IllegalArgumentException(String.format("传入的时间毫秒数[%s]不合法", "" + millisecond));
         }
@@ -287,8 +274,8 @@ public class DateUtils {
     }
 
     /**
-     * 根据日期的到给定日期的在当月中的中国的星期数(Week从1开始)
-     *
+     * 根据日期的到给定日期的在当月中的中国的星期数
+     * DAY_OF_WEEK 是7，所以WEEKS必须是从1开始，故WEEKS[0]没有意义
      * @param date 给定日期
      * @param format
      * @return
@@ -300,9 +287,8 @@ public class DateUtils {
         if (date != null && !"".equals(date.trim())) {
             rightNow.setTime(stringToDate(date, format));
         }
-        // rightNow.get(Calendar.WEEK_OF_MONTH);
-        // System.out.println(rightNow.get(Calendar.WEEK_OF_MONTH)+";"+rightNow);
-        return WEEKS[rightNow.get(Calendar.WEEK_OF_MONTH)+1];
+        // logger.info(rightNow.get(Calendar.WEEK_OF_MONTH)+";"+rightNow);
+        return WEEKS[rightNow.get(Calendar.DAY_OF_WEEK)];
     }
 
     /**
@@ -488,15 +474,15 @@ public class DateUtils {
 
     public static void main(String[] args) throws InterruptedException, ParseException {
         Calendar c1 = Calendar.getInstance();
-        //System.out.println(c1.getTimeZone());
+        //logger.info(c1.getTimeZone());
 
         //testCalendar();
         //test2();
-        String date = "2015-07-05 10:20:20";
+        String date = "2015-07-26 10:20:20";
         // SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT_SEC);
-        System.out.println(stringToDate(date,DEFAULT_DATETIME_FORMAT_SEC));
+        logger.info(stringToDate(date, DEFAULT_DATETIME_FORMAT_SEC));
 
-        System.out.println(getChineseWeekOfMonth());
+        logger.info(getChineseWeekOfMonth(date, DEFAULT_DATETIME_FORMAT_SEC));
 
     }
 
@@ -509,7 +495,7 @@ public class DateUtils {
         cal1.set(2000, 7, 31, 0, 0 , 0); //2000-8-31
         cal1.set(Calendar.MONTH, Calendar.SEPTEMBER); //应该是 2000-9-31，也就是 2000-10-1
         cal1.set(Calendar.DAY_OF_MONTH, 30); //如果 Calendar 转化到 2000-10-1，那么现在的结果就该是 2000-10-30
-        System.out.println(cal1.getTime()); //输出的是2000-9-30，说明 Calendar 不是马上就刷新其内部的记录
+        logger.info(cal1.getTime()); //输出的是2000-9-30，说明 Calendar 不是马上就刷新其内部的记录
     }
 
     /**
@@ -519,10 +505,10 @@ public class DateUtils {
     public static void test2(){
         Calendar cal1 = Calendar.getInstance();
         cal1.set(2000, 1, 32, 0, 0, 0);
-        System.out.println(cal1.getTime());
+        logger.info(cal1.getTime());
         cal1.setLenient(false);
         cal1.set(2000, 1, 32, 0, 0, 0);
-        System.out.println(cal1.getTime());
+        logger.info(cal1.getTime());
     }
 
     public static void testCalendar() throws InterruptedException {
@@ -535,34 +521,34 @@ public class DateUtils {
 
         //通过日期和毫秒数设置Calendar
         now2.setTime(new Date());
-        System.out.println(now2);
+        logger.info(now2);
         now2.setTimeInMillis(new Date().getTime());
-        System.out.println(now2);
+        logger.info(now2);
 
 
         //定义日期的中文输出格式,并输出日期,hh小写是12小时制，HH大写是24小时制
         SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E", Locale.CHINA);
-        System.out.println("获取日期中文格式化化输出：" + df.format(now5.getTime()));
+        logger.info("获取日期中文格式化化输出：" + df.format(now5.getTime()));
         System.out.println();
 
-        System.out.println("--------通过Calendar获取日期中年月日等相关信息--------");
-        System.out.println("获取年：" + now1.get(Calendar.YEAR));
-        System.out.println("获取月(月份是从0开始的)：" + (now1.get(Calendar.MONTH)+1));
-        System.out.println("获取日：" + now1.get(Calendar.DAY_OF_MONTH));
-        System.out.println("获取时：" + now1.get(Calendar.HOUR));
-        System.out.println("获取分：" + now1.get(Calendar.MINUTE));
-        System.out.println("获取秒：" + now1.get(Calendar.SECOND));
-        System.out.println("获取上午、下午：" + (now1.get(Calendar.AM_PM) == 0 ? "上午":"下午"));
-        System.out.println("获取星期数值(星期是从周日1开始的)：" + (now1.get(Calendar.DAY_OF_WEEK)-1));
+        logger.info("--------通过Calendar获取日期中年月日等相关信息--------");
+        logger.info("获取年：" + now1.get(Calendar.YEAR));
+        logger.info("获取月(月份是从0开始的)：" + (now1.get(Calendar.MONTH) + 1));
+        logger.info("获取日：" + now1.get(Calendar.DAY_OF_MONTH));
+        logger.info("获取时：" + now1.get(Calendar.HOUR));
+        logger.info("获取分：" + now1.get(Calendar.MINUTE));
+        logger.info("获取秒：" + now1.get(Calendar.SECOND));
+        logger.info("获取上午、下午：" + (now1.get(Calendar.AM_PM) == 0 ? "上午" : "下午"));
+        logger.info("获取星期数值(星期是从周日1开始的)：" + (now1.get(Calendar.DAY_OF_WEEK) - 1));
         System.out.println();
 
-        System.out.println("---------通用星期中文化转换，从一开始---------");
+        logger.info("---------通用星期中文化转换，从一开始---------");
         String dayOfWeek[] = {"", "日", "一", "二", "三", "四", "五", "六"};
-        System.out.println("now1对象的星期是:" + dayOfWeek[now1.get(Calendar.DAY_OF_WEEK)]);
+        logger.info("now1对象的星期是:" + dayOfWeek[now1.get(Calendar.DAY_OF_WEEK)]);
         System.out.println();
 
-        System.out.println("---------通用月份中文化转换,从0开始---------");
+        logger.info("---------通用月份中文化转换,从0开始---------");
         String months[] = {"一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"};
-        System.out.println("now1对象的月份是: " + months[now1.get(Calendar.MONTH)]);
+        logger.info("now1对象的月份是: " + months[now1.get(Calendar.MONTH)]);
     }
 }
