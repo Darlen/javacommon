@@ -42,7 +42,6 @@ public class CpFile2LocalBySVNPathDemo {
         String des = "./tmpSVNFiles";
         //当前工作目录，也就是项目所在目录
         System.out.println(System.getProperty("user.dir"));
-
         cpFileFrmTxt2Dst("FileCopyTxt.txt", des);
     }
 
