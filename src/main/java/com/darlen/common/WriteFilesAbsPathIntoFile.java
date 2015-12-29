@@ -9,11 +9,12 @@
 package com.darlen.common;
 
 /**
- * Description.
+ * Description. 打印某个目录下所有的文件，包括子文件夹中的文件，并把他们的绝对路径写入文件中
  * Created on  2015-07-26 下午10:30
  * -------------------------------------------------------------------------
- * 版本          修改时间              作者               修改内容 
- * 1.0.0        下午10:30              Darlen              create
+ * 版本     修改时间        作者          修改内容 
+ * 1.0.0        下午10:30              Darlen               create
+ * 1.0.1        2015/12/29 20:55        Darlen              Update
  * -------------------------------------------------------------------------
  *
  * @author Darlen liu
@@ -33,14 +34,14 @@ import java.util.List;
  * 3.将容器中的内容遍历，写入到指定文件中
  *
  */
-public class FileNameFileterWriteFile {
-    private final static Logger logger = Logger.getLogger(FileNameFileterWriteFile.class);
+public class WriteFilesAbsPathIntoFile {
+    private final static Logger logger = Logger.getLogger(WriteFilesAbsPathIntoFile.class);
     /**
      * @param args
      */
     public static void main(String[] args) {
-        File dir = new File("F:\\test1\\test");
-        FilenameFilter fileter = new FileterByJava(".txt");//过滤.bak文件
+        File dir = new File("F:\\test1");
+        FilenameFilter fileter = new FileNameFilter(".txt");//过滤.bak文件
         List<File> fileList = new ArrayList<File>();
         getFileList(dir,fileter,fileList);
         File desFile = new File(dir, "FileList.txt");
@@ -108,18 +109,18 @@ public class FileNameFileterWriteFile {
  * 2.遍历的过程中过滤指定扩展名的文件--过滤器FileNameFilter，将文件存入容器中
  * 3.将容器中的内容遍历，写入到指定文件中
  */
-class FileterByJava implements FilenameFilter {
-    private final static Logger logger = Logger.getLogger(FileterByJava.class);
+class FileNameFilter implements FilenameFilter {
+    private final static Logger logger = Logger.getLogger(FileNameFilter.class);
 
-    private String SufixName;//传入过滤的名称
-    public FileterByJava(String SufixName){
-        this.SufixName = SufixName;
+    private String suffixName;//传入过滤的名称
+    public FileNameFilter(String suffixName){
+        this.suffixName = suffixName;
     }
 
     @Override
     public boolean accept(File dir, String name) {
         logger.info("dir：" + dir + "_____" + "name：" + name);
-        return name.endsWith(SufixName);
+        return name.endsWith(suffixName);
     }
 
 }
