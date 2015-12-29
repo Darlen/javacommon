@@ -9,6 +9,7 @@
 package com.darlen.common;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -39,21 +40,26 @@ public class CpFile2LocalBySVNPathDemo {
 
     public static void main(String[] args) throws IOException {
         // 目标文件夹,默认在当前工作目录下的tempFile下”.”或”.\”代表当前目录,这个目录也就是jvm启动路径
+        logger.debug("开始复制文件...");
+        long start = System.currentTimeMillis();
         String des = "./tmpSVNFiles";
         //当前工作目录，也就是项目所在目录
         System.out.println(System.getProperty("user.dir"));
         cpFileFrmTxt2Dst("FileCopyTxt.txt", des);
+        logger.debug("复制指定的文件成功，总共耗时【"+(System.currentTimeMillis()-start)+"】 ms");
     }
 
     /**
      *
-     * @param resourceTxtPath  资源文件所在路径
+     * @param resourceTxtName  资源文件名
      * @param des
      * @return
      * @throws IOException
      */
-    public static void cpFileFrmTxt2Dst(String resourceTxtPath,String des) throws IOException {
-        InputStream is = ClassLoader.getSystemResourceAsStream(resourceTxtPath);
+    public static void cpFileFrmTxt2Dst(String resourceTxtName,String des) throws IOException {
+        Assert.assertNotNull("资源文件名不能为空",resourceTxtName);
+        Assert.assertNotNull("目标路径不能为空",des);
+        InputStream is = ClassLoader.getSystemResourceAsStream(resourceTxtName);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line = null;
         int i = 0;
@@ -64,22 +70,25 @@ public class CpFile2LocalBySVNPathDemo {
         }
         while ((line = (br.readLine()))!= null ){
             if(!"".equalsIgnoreCase(StringUtils.nullToString(line))){
-                logger.info("记录每行内容："+line);
-                if(i ==0){
+
+                if(i ==0){//第一行为基路径
                     baseSrcPath = line;
                     //基本路径不是以\结尾，则加上\
                     if(baseSrcPath.lastIndexOf(File.separatorChar) != baseSrcPath.length()-1){
                         baseSrcPath += File.separator;
                     }
-                    logger.info("首行路径："+baseSrcPath);
-                }else{
-
-                    File f = new File(baseSrcPath+line);
-                    //1.为每个file创建相应的forder
+                    logger.info("首行基路径【"+baseSrcPath+"】");
+                }else{//除第一行外每行都是需要处理的文件路径
+                    logger.info("除首行外每行的路径【"+line+"】");
+                    //File f = new File(baseSrcPath+line);
+                    //1.为每个file创建相应的文件夹
                     String realDesPath = des + line;
                     String realDesPathParent = realDesPath.substring(0, realDesPath.lastIndexOf('\\'));
-                    logger.info("真正的路径："+realDesPathParent);
-                    new File(realDesPathParent).mkdirs();
+                    logger.info("创建真正的路径的文件夹【"+realDesPathParent+"】，文件名为【"+realDesPath+"】");
+                    if(!new File(realDesPathParent).mkdirs()){
+                        throw new IOException("目录："+realDesPathParent+"不能被创建");
+                    }
+
 
                     // 2.把源路径的file复制到目的地
                     //copyFile(f,new File(realDesPath));
@@ -156,7 +165,7 @@ public class CpFile2LocalBySVNPathDemo {
         (new File(des)).mkdirs();
 
         for(int i =0;i<fileListFromtxt.size();i++){
-           // copyFile(fileListFromtxt.get(i),new File(des+File.separator+fileListFromtxt.get(i).getParent()));
+            copyFile(fileListFromtxt.get(i),new File(des+File.separator+fileListFromtxt.get(i).getParent()));
 
         }
     }

@@ -9,6 +9,7 @@
 package com.darlen.common;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -370,8 +371,74 @@ public class FileUtils {
         return files.toArray(new File[files.size()]);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         //http://blog.csdn.net/gao36951/article/details/38302553
         logger.info(getUserDirectoryPath());
+
+
+
+
     }
+
+
+
+
+
+
+
+    /**
+     * 保存文件(文件不存在会自动创建).
+     *
+     * @param path 文件路径
+     * @param content 文件内容
+     * @throws Exception
+     */
+    public static void saveFile(String path, String content) throws Exception {
+        saveFile(path, content, "UTF-8");
+    }
+
+    /**
+     * 保存文件(文件不存在会自动创建).
+     *
+     * @param path 文件路径
+     * @param content 文件内容
+     * @param encoding 编码(UTF-8/gb2312/...)
+     * @throws Exception
+     */
+    public static void saveFile(String path, String content, String encoding) throws Exception {
+        FileOutputStream fileOutputStream = null;
+        BufferedOutputStream bw = null;
+        try {
+            // 获得文件对象
+            File f = new File(path);
+            // 默认编码UTF-8
+            encoding = (org.apache.commons.lang.StringUtils.isEmpty(encoding)) ? "UTF-8" : encoding;
+            // 如果路径不存在,则创建
+            if (!f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
+            }
+            // 开始保存文件
+            fileOutputStream = new FileOutputStream(path);
+            bw = new BufferedOutputStream(fileOutputStream);
+            bw.write(content.getBytes(encoding));
+        } catch (Exception e) {
+            logger.error("保存文件错误.path=" + path + ",content=" + content + ",encoding=" + encoding, e);
+            throw e;
+        } finally {
+            if (bw != null) {
+                try {
+                    bw.close();
+                } catch (IOException e1) {
+                }
+            }
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+    }
+
+
 }

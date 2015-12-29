@@ -30,23 +30,23 @@ import javax.servlet.http.HttpServletRequest;
  * @author Darlen liu
  */
 public class StringUtils {
-    private static Logger log = Logger.getLogger(StringUtils.class);
+    private static Logger logger = Logger.getLogger(StringUtils.class);
     private static String formatPatternDefault = "#0.00";
     private static DecimalFormat df = new DecimalFormat(formatPatternDefault);
 
     /**
-     * Converts a string to a non-null value.
+     * 转化字符串数组为一个不为空的字符串（Converts a string to a non-null value.）
      *
      * @param inString the string to be converted
-     * @return the result - if inString is null or "null", return ""; else return the trimmed string.
+     * @return the result - if inString is null or "null" or "", return ""; else return the trimmed string.
      * @publish
      */
     public static String nullToString(String inString) {
-        return ((inString == null || "null".equalsIgnoreCase(inString.trim())) ? "" : inString.trim());
+        return ((inString == null || "null".equalsIgnoreCase(inString.trim()) || "".equals(inString.trim())) ? "" : inString.trim());
     }
 
     /**
-     * Converts a string to a non-null value.
+     * 转化字符串数组为一个不为空的字符串（Converts a string to a non-null value.）
      *
      * @param inString the string to be converted
      * @param defaultString the default returned string when the inString is null
@@ -58,7 +58,7 @@ public class StringUtils {
     }
 
     /**
-     * Converts a string to a non-null value.
+     * 转化字符串数组为一个不为空的字符串（Converts a string to a non-null value.）
      *
      * @param inObject the inObject to be converted
      * @return the result string
@@ -69,7 +69,7 @@ public class StringUtils {
     }
 
     /**
-     * Convers an object to integer.
+     * 转化Object类型为int类型（Convert an object to integer.）
      *
      * @param inObject any number objects such as Integer, Double, etc. A number string (or any object that its toString returns a valid number string) is also acceptable
      * @return the integer value
@@ -82,7 +82,6 @@ public class StringUtils {
                 Double temp = new Double(inObject.toString());
                 iRet = temp.intValue();
             } catch (Exception e) {
-
                 iRet = 0;
             }
         }
@@ -98,8 +97,9 @@ public class StringUtils {
      * @publish
      */
     public static String[] stringToArray(String aValue, String delim) {
-        if (aValue == null)
-        {return new String[0];}
+        if (aValue == null){
+            return new String[0];
+        }
         java.util.StringTokenizer strTokenizer = new java.util.StringTokenizer(aValue, delim);
         String[] oRet = new String[strTokenizer.countTokens()];
         int iRow = 0;
@@ -159,8 +159,8 @@ public class StringUtils {
                 iRet = value1.toLowerCase().compareTo(value2.toLowerCase());
                 // logger.info("value1:" + value1 + "<<<>>>value2:" + value2 + " iRet:" + iRet);
             } catch (Exception e) {
-                if (log.isDebugEnabled()) {
-                    log.debug(e.getMessage(), e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(e.getMessage(), e);
                 }
             }
             return iRet;

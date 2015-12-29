@@ -39,8 +39,8 @@ public class FileNameFileterWriteFile {
      * @param args
      */
     public static void main(String[] args) {
-        File dir = new File("F:\\test1");
-        FilenameFilter fileter = new FileterByJava(".bak");//过滤.bak文件
+        File dir = new File("F:\\test1\\test");
+        FilenameFilter fileter = new FileterByJava(".txt");//过滤.bak文件
         List<File> fileList = new ArrayList<File>();
         getFileList(dir,fileter,fileList);
         File desFile = new File(dir, "FileList.txt");
